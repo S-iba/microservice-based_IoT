@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="IoT.Api/IoT.Api.csproj" />
   <Project Path="IoT.Shared/IoT.Shared.csproj" />
+  <Project Path="IoT.Worker/IoT.Worker.csproj" />
 </Solution>
