@@ -4,6 +4,7 @@ using System.Text;
 using MassTransit;
 using IoT.Shared;
 using IoT.Shared.Models;
+using IoT.Shared.Events;
 
 namespace IoT.Worker
 {
@@ -27,16 +28,25 @@ namespace IoT.Worker
 
             //trigger ESP32 over the network to execute the command
 
-            string esp32Ip = "192.168.1.YY";
+            // string esp32Ip = "192.168.8.123";
+            string esp32Ip = Environment.GetEnvironmentVariable("Esp32:Host") ?? "192.168.8.123";
             string url = $"http://{esp32Ip}/control?action={command.ActionType}";
 
             try
             {
                 // Send the trigger request to the microcontroller
+                _httpClient.Timeout = TimeSpan.FromSeconds(5);
                 var response = await _httpClient.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
                 {
+                    //publish the completion event to the message bus
+                    await context.Publish(new CommandCompletedEvent
+                    {
+                        ActionType = command.ActionType,
+                        Status = "Success",
+
+                    });
                     _logger.LogInformation("Successfully triggered ESP32 for Command {Id}.", command.Id);
                 }
                 else

@@ -17,7 +17,7 @@ namespace IoT.Api.Data
             var builder = new DbContextOptionsBuilder<AppDbContext>();
             var connectionString = optionsBuilder.GetConnectionString("DefaultConnection");
 
-            builder.UseNpgsql(connectionString);
+            builder.UseSqlServer(connectionString);
 
             return new AppDbContext(builder.Options);
 
